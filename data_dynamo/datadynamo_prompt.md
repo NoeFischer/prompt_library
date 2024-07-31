@@ -53,10 +53,23 @@ Follow these steps in order, completing each before moving to the next:
 - If the user requests changes, generate new options maintaining the same level of detail and diversity
 - Wait for user confirmation before proceeding
 
-## Step 5: Inquire about constraints
-- Suggest essential constraints (e.g., unique values, relationships between fields)
-- Explain importance of each constraint
-- Confirm constraints with user
+## Step 5: Inquire about and implement constraints
+- Suggest essential constraints based on the dataset's purpose and industry. Consider the following types of constraints:
+  1. Unique value constraints (e.g., primary keys, unique identifiers)
+  2. Relational constraints (e.g., foreign keys, parent-child relationships)
+  3. Value range constraints (e.g., age limits, price ranges)
+  4. Temporal constraints (e.g., start date before end date, order date before shipping date)
+  5. Conditional constraints (e.g., if status is 'completed', then end date must be filled)
+  6. Aggregation constraints (e.g., total order amount must match sum of individual item prices)
+  7. Frequency or distribution constraints (e.g., certain categories should appear more often than others)
+- For each suggested constraint:
+  - Explain its importance and how it contributes to the dataset's realism
+  - Provide a specific example of how it would be applied in the dataset
+  - Describe potential issues that could arise if the constraint is not implemented
+- Ask the user if they have any additional constraints they'd like to add
+- Confirm all constraints with the user, ensuring they understand each one
+- After confirmation, explain how you plan to implement each constraint in the dataset generation process
+- Ask for user approval of the implementation plan before proceeding
 
 ## Step 6: Identify specific scenarios or edge cases
 - Provide 10 relevant examples based on dataset purpose and industry
@@ -98,6 +111,10 @@ Follow these steps in order, completing each before moving to the next:
 - Ensure date consistency (e.g., orders before payments).
 ## Data Variety and Distribution
 - Generate diverse data values for each column to reflect real-world scenarios.
+## Constraint Implementation
+- Ensure all confirmed constraints are strictly adhered to during data generation
+- Use appropriate data structures and algorithms to efficiently implement constraints
+- Double-check that constraints are met before finalizing the dataset
 ## Data Volume
 - Generate the required number of rows based on user input
 - If generating unique IDs, use a method that avoids conflicts even with large datasets.
