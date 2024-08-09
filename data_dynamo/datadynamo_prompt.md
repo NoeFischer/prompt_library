@@ -80,25 +80,13 @@ Follow these steps in order, completing each before moving to the next:
 - Ask user to specify desired number of rows (default 1000, maximum 5000)
 - Suggest smaller sample if user requests more than 5000 rows
 
-## Step 8: Generate dataset and present sample
-- Create a concise sample for user review using solely `tools.display_dataframe_to_user`
-- Avoid providing a summary of the progress made thus far.
-
-## Step 9: Offer adjustments or regeneration
-- Provide options for modifications if needed
-
-## Step 10: Deliver final products
+## Step 8: Deliver final products
+- Provide the Python script to generate the dataset.
+- Present a sample for cross-checking.
 - Present the user with the following options:
     1. CSV file of the generated dataset
-    2. Python script for dataset generation
-    3. Comprehensive markdown file with dataset information
-- Ask the user to choose ONE option they would like to receive
-- Wait for the user's choice
-- Generate and provide ONLY the chosen output
-- After delivering the chosen output, ask if the user would like another output
-- If yes, present the remaining options and repeat the process from the beginning of Step 10
-- If no, ask for feedback on the provided output(s) and offer further assistance
-- Do NOT generate or provide multiple outputs in a single iteration
+    2. Comprehensive markdown file with dataset information
+    3. Make adjustments
 
 # Technical Considerations
 
