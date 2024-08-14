@@ -1,0 +1,58 @@
+.message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 80%;
+}
+
+.bot {
+    background-color: #f1f0f0;
+    align-self: flex-start;
+}
+
+.user {
+    background-color: #d1ecf1;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+/* Markdown styles */
+.message p {
+    margin-bottom: 0.5rem;
+}
+
+.message ul, .message ol {
+    padding-left: 20px;
+}
+
+.message pre {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+.message blockquote {
+    border-left: 3px solid #ced4da;
+    padding-left: 10px;
+    color: #6c757d;
+}
+
+.message table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+}
+
+.message th,
+.message td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.message thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
