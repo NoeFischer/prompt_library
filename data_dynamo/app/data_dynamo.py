@@ -1,8 +1,10 @@
+import json
+
 from openai import OpenAI
 from pydantic import BaseModel
 
 
-class Response(BaseModel):
+class StepResponse(BaseModel):
     action: str
     response: str
 
@@ -11,7 +13,7 @@ class DatasetChatbot:
     def __init__(self):
         self.client = OpenAI()
         self.conversation_history = []
-        self.current_step_index = 0
+        self.current_step = 0
         self.steps = [
             "use_case",
             "columns",
@@ -23,7 +25,9 @@ class DatasetChatbot:
             "delivery",
         ]
         self.prompts = {
-            "use_case": "Ask about the use case of the dataset.",
+            "use_case": """
+            You are an AI assistant specializing in generating sample datasets. Your role is to interact with users professionally and efficiently, guiding them through the conversation one question at a time and creating customized datasets. You refuse to answer any questions that are not related to the use case of the dataset. Greet the user and ask about the use case of the dataset.
+            """,
             "columns": "Suggest appropriate columns for the dataset based on the use case.",
             "ranges_distributions": "Provide realistic ranges and distributions for float and integer columns.",
             "categories": "Suggest categories for categorical columns.",
@@ -47,36 +51,40 @@ class DatasetChatbot:
     def update_conversation(self, input_type, input_content):
         self.conversation_history.append({"role": input_type, "content": input_content})
 
-    def generate_response(self, prompt):
-        messages = self.conversation_history + [{"role": "system", "content": prompt}]
-        response = self.client.chat.completions.create(
-            model="gpt-4", messages=messages, temperature=0.7
+    def generate_response(self, step, user_input=None):
+        if user_input:
+            self.update_conversation("user", user_input)
+        # Update the conversation history with the system prompt
+        self.update_conversation("system", self.prompts[step])
+        # Generate the response
+        response = self.client.beta.chat.completions.parse(
+            model="gpt-4o-mini",
+            temperature=0.7,
+            messages=self.conversation_history,
+            response_format=StepResponse,
         )
-        return Response(action="next", response=response.choices[0].message.content)
+        assistant_response = json.loads(response.choices[0].message.content)
+        # Update the conversation history with the assistant's response
+        self.update_conversation("assistant", assistant_response["response"])
+        return assistant_response
 
-    def process_input(self, user_input):
-        self.update_conversation("user", user_input)
+    def conversation_flow(self, user_input=None):
+        while self.current_step < len(self.steps):
+            current_step = self.steps[self.current_step]
+            if user_input is None:
+                return self.generate_response(current_step)["response"]
 
-        # First, generate a follow-up response
-        follow_up = self.generate_response(self.prompts["follow_up"])
+            while True:
+                follow_up = self.generate_response("follow_up", user_input)
 
-        if follow_up.action == "next":
-            # If we're moving to the next step, generate the response for that step
-            if self.current_step_index < len(self.steps) - 1:
-                self.current_step_index += 1
-            current_step = self.steps[self.current_step_index]
-            prompt = self.prompts[current_step]
-            response = self.generate_response(prompt)
-        else:
-            # If we're modifying, use the follow-up response
-            response = follow_up
+                if follow_up["action"] == "next":
+                    self.current_step += 1
+                    break
+                else:
+                    return follow_up["response"]
 
-        self.update_conversation("assistant", response.response)
-        return response.response
+            user_input = None
 
-    def start_conversation(self):
-        first_step = self.steps[0]
-        prompt = self.prompts[first_step]
-        response = self.generate_response(prompt)
-        self.update_conversation("assistant", response.response)
-        return response.response
+        return (
+            "Thank you for using DataDynamo. Your dataset creation process is complete."
+        )

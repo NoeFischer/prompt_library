@@ -4,9 +4,9 @@ const userInput = document.getElementById('user-input');
 
 // Fetch initial message
 fetch('/initial-message')
-    .then(response => response.text())
-    .then(message => {
-        document.getElementById('initial-message').innerHTML = marked.parse(message);
+    .then(response => response.json())
+    .then(data => {
+        appendMessage('DataDynamo', data.message, 'bot');
     });
 
 chatForm.addEventListener('submit', async function (e) {
@@ -26,10 +26,10 @@ chatForm.addEventListener('submit', async function (e) {
         },
         body: JSON.stringify({ message: userMessage }),
     });
-    const botMessage = await response.text();
+    const data = await response.json();
 
     // Display bot message
-    appendMessage('DataDynamo', botMessage, 'bot');
+    appendMessage('DataDynamo', data.message, 'bot');
 });
 
 function appendMessage(sender, message, className) {
