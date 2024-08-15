@@ -21,7 +21,8 @@
     margin-bottom: 0.5rem;
 }
 
-.message ul, .message ol {
+.message ul,
+.message ol {
     padding-left: 20px;
 }
 

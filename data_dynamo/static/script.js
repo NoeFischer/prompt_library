@@ -2,11 +2,36 @@ const chatMessages = document.getElementById('chat-messages');
 const chatForm = document.getElementById('chat-form');
 const userInput = document.getElementById('user-input');
 
-// Fetch initial message
-fetch('/initial-message')
+// Function to append messages
+function appendMessage(sender, message, className) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${className}`;
+
+    const senderSpan = document.createElement('strong');
+    senderSpan.textContent = sender + ': ';
+    messageDiv.appendChild(senderSpan);
+
+    const contentSpan = document.createElement('span');
+    contentSpan.innerHTML = marked.parse(message);
+    messageDiv.appendChild(contentSpan);
+
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Start the conversation flow
+fetch('/chat', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ message: '' }),
+})
     .then(response => response.json())
     .then(data => {
-        appendMessage('DataDynamo', data.message, 'bot');
+        if (data.message && data.message.trim() !== '') {
+            appendMessage('DataDynamo', data.message, 'bot');
+        }
     });
 
 chatForm.addEventListener('submit', async function (e) {
@@ -31,19 +56,3 @@ chatForm.addEventListener('submit', async function (e) {
     // Display bot message
     appendMessage('DataDynamo', data.message, 'bot');
 });
-
-function appendMessage(sender, message, className) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${className}`;
-
-    const senderSpan = document.createElement('strong');
-    senderSpan.textContent = sender + ': ';
-    messageDiv.appendChild(senderSpan);
-
-    const contentSpan = document.createElement('span');
-    contentSpan.innerHTML = marked.parse(message);
-    messageDiv.appendChild(contentSpan);
-
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}

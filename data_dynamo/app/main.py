@@ -23,12 +23,11 @@ async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-@app.get("/initial-message")
-async def get_initial_message():
-    return JSONResponse(content={"message": chatbot.conversation_flow()})
-
-
 @app.post("/chat")
 async def chat(message: ChatMessage):
-    response = chatbot.conversation_flow(message.message)
+    if message.message.strip() == "":
+        # This is the initial message
+        response = chatbot.conversation_flow()
+    else:
+        response = chatbot.conversation_flow(message.message)
     return JSONResponse(content={"message": response})
