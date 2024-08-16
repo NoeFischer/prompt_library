@@ -25,9 +25,6 @@ async def read_root(request: Request):
 
 @app.post("/chat")
 async def chat(message: ChatMessage):
-    if message.message.strip() == "":
-        # This is the initial message
-        response = chatbot.conversation_flow()
-    else:
-        response = chatbot.conversation_flow(message.message)
+    user_input = message.message.strip()
+    response = chatbot.conversation_flow(user_input)
     return JSONResponse(content={"message": response})

@@ -68,10 +68,10 @@ class DatasetChatbot:
         self.update_conversation("assistant", assistant_response["response"])
         return assistant_response
 
-    def conversation_flow(self, user_input=None):
+    def conversation_flow(self, user_input=""):
         while self.current_step < len(self.steps):
             current_step = self.steps[self.current_step]
-            if user_input is None:
+            if not user_input:
                 return self.generate_response(current_step)["response"]
 
             while True:
@@ -83,7 +83,7 @@ class DatasetChatbot:
                 else:
                     return follow_up["response"]
 
-            user_input = None
+            user_input = ""
 
         return (
             "Thank you for using DataDynamo. Your dataset creation process is complete."
